@@ -1,0 +1,27 @@
+{
+  "name": "dicopal",
+  "version": "0.0.1",
+  "description": "Discrete color palettes for cartography and data visualization",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "watch": "rollup -c -w",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": {
+    "name": "Matthieu Viry",
+    "email": "matthieu.viry@cnrs.fr"
+  },
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@rollup/plugin-json": "^6.0.0",
+    "rollup": "^3.26.0",
+    "rollup-plugin-typescript2": "^0.35.0",
+    "typescript": "^5.1.6"
+  }
+}
