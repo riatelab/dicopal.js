@@ -17,6 +17,8 @@
 > - [The Wes Anderson Palettes blog](https://wesandersonpalettes.tumblr.com/)
 > - [Masataka Okabe and Kei Ito's Color Universal Design (CUD) palette](https://jfly.uni-koeln.de/color/)
 
+⏩ [Browse all the available palettes](https://observablehq.com/@mthh/hello-dicopal)
+
 ## Installation
 
 ### NPM
