@@ -1,7 +1,15 @@
 {
   "name": "dicopal",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Discrete color palettes for cartography and data visualization",
+  "homepage": "https://github.com/riatelab/dicopal.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/riatelab/dicopal.js"
+  },
+  "bugs": {
+    "url": "https://github.com/riatelab/dicopal.js/issues"
+  },
   "type": "module",
   "main": "dist/index.min.js",
   "module": "dist/index.min.esm.js",
@@ -24,5 +32,11 @@
     "rollup": "^3.26.0",
     "rollup-plugin-typescript2": "^0.35.0",
     "typescript": "^5.1.6"
-  }
+  },
+  "keywords": [
+    "color",
+    "palette",
+    "cartography",
+    "visualization"
+  ]
 }
