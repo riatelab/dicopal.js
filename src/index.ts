@@ -1,4 +1,4 @@
-import data from './data.json';
+import data from './palettes.json';
 
 /**
  * @description Palette type
@@ -20,15 +20,16 @@ enum PaletteType {
  * @enum {string}
  * @readonly
  * @memberof Palette
- * @property {string} CARTOCOLORS - CARTOColors palette
- * @property {string} CMOCEAN - cmocean palette
- * @property {string} COLORBREWER - ColorBrewer palette
- * @property {string} LIGHTBARTLEIN - Light Bartlein palette
- * @property {string} MATPLOTLIB - Matplotlib palette
- * @property {string} MYCARTA - MyCarta palette
- * @property {string} SCIENTIFIC - Scientific palette
- * @property {string} TABLEAU - Tableau palette
- * @property {string} WESANDERSON - Wes Anderson palette
+ * @property {string} CARTOCOLORS - CARTOColors palettes
+ * @property {string} CMOCEAN - cmocean palettes
+ * @property {string} COLORBREWER - ColorBrewer palettes
+ * @property {string} LIGHTBARTLEIN - Light Bartlein palettes
+ * @property {string} MATPLOTLIB - Matplotlib palettes
+ * @property {string} MYCARTA - MyCarta palettes
+ * @property {string} SCIENTIFIC - Fabio Crameri's Scientific palettes
+ * @property {string} TABLEAU - Tableau palettes
+ * @property {string} WESANDERSON - Wes Anderson palettes
+ * @property {string} OKABEITO - Okabe & Ito's palette
  */
 enum Provider {
   CARTOCOLORS = 'cartocolors',
@@ -40,6 +41,7 @@ enum Provider {
   SCIENTIFIC = 'scientific',
   TABLEAU = 'tableau',
   WESANDERSON = 'wesanderson',
+  OKABEITO = 'okabeito',
 }
 
 /**
@@ -51,7 +53,7 @@ enum Provider {
  * @property {PaletteType} type - Palette type
  * @property {string[]} colors - Palette colors (hexadecimal)
  * @property {Provider} provider - Palette provider
- * @property {string} [url] - Palette url
+ * @property {string} [url] - Reference url
  */
 type Palette = {
   id: string;
@@ -61,23 +63,34 @@ type Palette = {
   colors: string[];
   provider: Provider;
   url?: string;
+  cbf?: boolean;
 }
 
 const palettes = data as Palette[];
 
 /**
- * @description Get a palette.
+ * @description Get a palette, given a name and number of classes. If no palette is found, undefined is returned.
  * @param {string} name - Palette name
  * @param {number} number - Number of classes in the palette
- * @returns {Palette} - The corresponding palette
+ * @returns {Palette | undefined} - The corresponding palette (if any)
  */
-export const getPalette = (name: string, number: number): Palette | undefined => palettes.find((palette) => palette.name === name && palette.number === number);
+export const getPalette = (name: string, number: number): Palette | undefined => palettes
+  .find((palette) => palette.name === name && palette.number === number);
+
+/**
+ * @description Get a palette by id. If no palette is found, undefined is returned.
+ * @param {string} id - Palette id (follows the pattern '{name}_{number}')
+ * @returns {Palette | undefined} - The corresponding palette (if any)
+ */
+export const getPaletteById = (id: string): Palette | undefined => palettes
+  .find((palette) => palette.id === id);
 
 /**
  * @description Get the colors of a palette.
  * @param {string} name - Palette name
  * @param {number} number - Number of classes in the palette
  * @param {boolean} reverse - Whether to reverse the order of the colors
+ * @returns {string[] | undefined} - The colors of the palette (if any)
  */
 export const getColors = (name: string, number: number, reverse?: boolean): string[] | undefined => {
   const pal = getPalette(name, number);
@@ -89,15 +102,18 @@ export const getColors = (name: string, number: number, reverse?: boolean): stri
 }
 
 /**
- * @description Find palettes matching the requested criteria. Note that 1) if no criteria is provided, all palettes are returned,
- * 2) if multiple criteria are provided, they are combined with AND, and 3) the criteria are case-insensitive.
+ * @description Returns palettes matching the requested criteria. Note that
+ * 1) if no criteria is provided, all palettes are returned,
+ * 2) if multiple criteria are provided, they are combined with AND, and
+ * 3) the criteria are case-insensitive.
  * @param {Object} [options] - Options
  * @param {string} [options.type] - Palette type ('sequential', 'diverging' or 'qualitative')
  * @param {number} [options.number] - Number of classes in the palette
  * @param {string} [options.provider] - Palette provider
  * @param {string} [options.name] - Palette name
+ * @returns {Palette[]} - Palettes matching the requested criteria, or all palettes if no criteria is provided
  */
-export const findPalettes = (options: { type?: string, number?: number, provider?: string, name?: string} = {}): Palette[] => {
+export const getPalettes = (options: { type?: string, number?: number, provider?: string, name?: string} = {}): Palette[] => {
   const { type, number, provider, name } = options;
 
   // If there is no criteria, return all palettes.

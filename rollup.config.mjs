@@ -1,9 +1,9 @@
 import typescript from 'rollup-plugin-typescript2';
 import json from '@rollup/plugin-json';
+import terser from '@rollup/plugin-terser';
 import pkg from './package.json' assert { type: 'json' };
 import ts from 'typescript';
 
-const extensions = ['.js', '.jsx', '.ts', '.tsx'];
 const input = "src/index.ts";
 
 const plugins = [
@@ -14,6 +14,7 @@ const plugins = [
   typescript({
     typescript: ts,
   }),
+  terser(),
 ];
 export default [
   {
