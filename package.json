@@ -13,6 +13,7 @@
   "type": "module",
   "main": "dist/index.min.js",
   "module": "dist/index.min.esm.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
