@@ -1,6 +1,6 @@
 {
   "name": "dicopal",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Discrete color palettes for cartography and data visualization",
   "type": "module",
   "main": "dist/index.min.js",
