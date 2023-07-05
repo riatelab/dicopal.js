@@ -1,4 +1,5 @@
 import data from './palettes.json';
+import cbf from './cbf.json'
 
 /**
  * @description Palette type
@@ -45,7 +46,7 @@ enum Provider {
 }
 
 /**
- * @description Palette
+ * @description A Palette object.
  * @typedef {Object} Palette
  * @property {string} id - Palette id
  * @property {string} name - Palette name
@@ -54,6 +55,7 @@ enum Provider {
  * @property {string[]} colors - Palette colors (hexadecimal)
  * @property {Provider} provider - Palette provider
  * @property {string} [url] - Reference url
+ * @property {boolean} [cbf] - Whether the palette is colorblind-friendly
  */
 type Palette = {
   id: string;
@@ -62,11 +64,15 @@ type Palette = {
   type: PaletteType;
   colors: string[];
   provider: Provider;
-  url?: string;
+  url: string;
   cbf?: boolean;
 }
 
-const palettes = data as Palette[];
+// @ts-ignore
+const paletteDescriptions = data as { [key in Provider]: any };
+
+const allProviders = Object.keys(paletteDescriptions);
+const allTypes = Object.keys(PaletteType).map((key) => PaletteType[key as keyof typeof PaletteType]);
 
 /**
  * @description Get a palette, given a name and number of classes. If no palette is found, undefined is returned.
@@ -74,19 +80,44 @@ const palettes = data as Palette[];
  * @param {number} number - Number of classes in the palette
  * @returns {Palette | undefined} - The corresponding palette (if any)
  */
-export const getPalette = (name: string, number: number): Palette | undefined => palettes
-  .find((palette) => palette.name === name && palette.number === number);
+export const getPalette = (name: string, number: number): Palette | undefined => {
+  for (let i = 0; i < allProviders.length; i++) {
+    const provider = allProviders[i];
+    if (paletteDescriptions[provider as Provider][name]?.values[`${number}`]) {
+      const o = {
+        id: `${name}_${number}`,
+        name,
+        number,
+        type: paletteDescriptions[provider as Provider][name].type as PaletteType,
+        colors: paletteDescriptions[provider as Provider][name].values[`${number}`],
+        provider: provider as Provider,
+        url: paletteDescriptions[provider as Provider][name].url,
+      };
+      if (cbf.includes(o.id)) {
+        // @ts-ignore
+        o.cbf = true;
+      }
+      return o as Palette;
+    }
+  }
+  return undefined;
+}
 
 /**
  * @description Get a palette by id. If no palette is found, undefined is returned.
  * @param {string} id - Palette id (follows the pattern '{name}_{number}')
  * @returns {Palette | undefined} - The corresponding palette (if any)
  */
-export const getPaletteById = (id: string): Palette | undefined => palettes
-  .find((palette) => palette.id === id);
+export const getPaletteById = (id: string): Palette | undefined => {
+  const ix = id.search(/_\d+$/);
+  if (ix === -1) return undefined;
+  const name = id.slice(0, ix);
+  const number = parseInt(id.slice(ix + 1), 10);
+  return getPalette(name, number);
+}
 
 /**
- * @description Get the colors of a palette.
+ * @description Get the colors of a palette, given its name and its number of classes.
  * @param {string} name - Palette name
  * @param {number} number - Number of classes in the palette
  * @param {boolean} reverse - Whether to reverse the order of the colors
@@ -100,6 +131,52 @@ export const getColors = (name: string, number: number, reverse?: boolean): stri
   }
   return pal.colors;
 }
+
+/**
+ * @description Get the colors of a palette given its id.
+ * @param {string} id - Palette id (follows the pattern '{name}_{number}')
+ * @param {boolean} reverse - Whether to reverse the order of the colors
+ * @returns {string[] | undefined} - The colors of the palette (if any)
+ */
+export const getColorsById = (id: string, reverse?: boolean): string[] | undefined => {
+  const pal = getPaletteById(id);
+  if (!pal) return;
+  if (reverse === true) {
+    return pal.colors.slice().reverse();
+  }
+  return pal.colors;
+}
+
+const getAllPalettes = (): Palette[] => {
+  const res: Palette[] = [];
+
+  allProviders.forEach((provider) => {
+    const names = Object.keys(paletteDescriptions[provider as Provider]);
+    names.forEach((name) => {
+      const type = paletteDescriptions[provider as Provider][name].type as PaletteType;
+      const url = paletteDescriptions[provider as Provider][name].url;
+      const numbers = Object.keys(paletteDescriptions[provider as Provider][name].values);
+      numbers.forEach((number) => {
+        const o = {
+          id: `${name}_${number}`,
+          name,
+          number: parseInt(number, 10),
+          type,
+          colors: paletteDescriptions[provider as Provider][name].values[number],
+          provider: provider as Provider,
+          url,
+        };
+        if (cbf.includes(o.id)) {
+          // @ts-ignore
+          o.cbf = true;
+        }
+        res.push(o as Palette);
+      });
+    });
+  });
+
+  return res;
+};
 
 /**
  * @description Returns palettes matching the requested criteria. Note that
@@ -116,15 +193,16 @@ export const getColors = (name: string, number: number, reverse?: boolean): stri
 export const getPalettes = (options: { type?: string, number?: number, provider?: string, name?: string} = {}): Palette[] => {
   const { type, number, provider, name } = options;
 
+  const allPalettes = getAllPalettes();
   // If there is no criteria, return all palettes.
-  if (!type && !number && !provider && !name) return palettes;
+  if (!type && !number && !provider && !name) return allPalettes;
 
   const _type = type ? type.toLowerCase() : undefined;
   const _provider = provider ? provider.toLowerCase() : undefined;
   const _name = name ? name.toLowerCase() : undefined;
 
   // Find palettes that match the requested criteria.
-  return palettes.filter((palette) => {
+  return allPalettes.filter((palette) => {
     if (type && palette.type !== _type) return false;
     if (number && palette.number !== number) return false;
     if (provider && palette.provider !== _provider) return false;
@@ -137,16 +215,22 @@ export const getPalettes = (options: { type?: string, number?: number, provider?
  * @description Return the names of the palette providers.
  * @returns {string[]} - Palette providers
  */
-export const getPaletteProviders = (): Provider[] => Object.keys(Provider).map((key) => Provider[key as keyof typeof Provider]);
+export const getPaletteProviders = (): Provider[] => allProviders as Provider[];
 
 /**
  * @description Return the names of the palette types.
  * @returns {string[]} - Palette types
  */
-export const getPaletteTypes = (): PaletteType[] => Object.keys(PaletteType).map((key) => PaletteType[key as keyof typeof PaletteType]);
+export const getPaletteTypes = (): PaletteType[] => allTypes as PaletteType[];
 
 /**
- * @description Return the names of the palettes.
+ * @description Return the names of the palettes (for all providers if no provider is specified).
+ * @param {string} [provider] - Palette provider
  * @returns {string[]} - Palette names
  */
-export const getPaletteNames = (): string[] => [...new Set(palettes.map((palette) => palette.name))];
+export const getPaletteNames = (provider?: Provider): string[] => {
+  if (!provider) {
+    return Object.keys(paletteDescriptions).map((p) => Object.keys(paletteDescriptions[p as Provider])).flat();
+  }
+  return Object.keys(paletteDescriptions[provider]);
+}

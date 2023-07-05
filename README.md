@@ -75,7 +75,7 @@ const palettes = getPalettes({ number: 3 }); // Returns 135 instances of palette
 ### List the existing palettes for a given type (sequential, diverging, qualitative)
 
 ```javascript
-const palettes = getPalettes({ type: 'qualitative' }); // Returns 159 instances of qualitative palettes
+const palettes = getPalettes({ type: 'qualitative' }); // Returns 160 instances of qualitative palettes
 ```
 
 ### List the existing palettes for a given provider (ColorBrewer, Tableau, etc.)
@@ -133,7 +133,11 @@ const providers = getPaletteTypes(); // Returns the 3 types
 ### List the existing palette names
 
 ```javascript
-const providers = getPaletteNames(); // Returns the 178 names ('ArmyRose', 'BrBg', 'Accent', etc.)
+const providers = getPaletteNames(); // Returns the 179 names ('ArmyRose', 'BrBg', 'Accent', etc.)
+```
+
+```javascript
+const providers = getPaletteNames('colorbrewer'); // Returns the 35 names ('BrBg', 'PRGn', etc.)
 ```
 
 ## Other information
