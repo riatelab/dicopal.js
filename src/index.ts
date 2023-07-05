@@ -215,13 +215,13 @@ export const getPalettes = (options: { type?: string, number?: number, provider?
  * @description Return the names of the palette providers.
  * @returns {string[]} - Palette providers
  */
-export const getPaletteProviders = (): Provider[] => allProviders as Provider[];
+export const getPaletteProviders = (): Provider[] => allProviders.slice() as Provider[];
 
 /**
  * @description Return the names of the palette types.
  * @returns {string[]} - Palette types
  */
-export const getPaletteTypes = (): PaletteType[] => allTypes as PaletteType[];
+export const getPaletteTypes = (): PaletteType[] => allTypes.slice() as PaletteType[];
 
 /**
  * @description Return the names of the palettes (for all providers if no provider is specified).
@@ -233,4 +233,35 @@ export const getPaletteNames = (provider?: Provider): string[] => {
     return Object.keys(paletteDescriptions).map((p) => Object.keys(paletteDescriptions[p as Provider])).flat();
   }
   return Object.keys(paletteDescriptions[provider]);
+}
+
+/**
+ * @description Return the available numbers of classes for a given palette name.
+ * @param {string} name - Palette name
+ * @returns {number[]} - Available numbers of classes
+ */
+export const getPaletteNumbers = (name: string): number[] => {
+  const res: number[] = [];
+  allProviders.forEach((provider) => {
+    if (paletteDescriptions[provider as Provider][name]) {
+      const numbers = Object.keys(paletteDescriptions[provider as Provider][name].values);
+      numbers.forEach((number) => {
+        res.push(parseInt(number, 10));
+      });
+    }
+  });
+  return res;
+}
+
+/**
+ * @description Get the raw description of the palettes (for all providers if no provider is specified,
+ *              otherwise for the specified provider).
+ * @param {Provider} [provider] - Palette provider
+ * @returns {Object} - Raw description of all the palette variations
+ */
+export const getRawData = (provider?: Provider) => {
+  if (!provider) {
+    return paletteDescriptions;
+  }
+  return paletteDescriptions[provider];
 }
