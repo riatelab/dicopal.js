@@ -148,6 +148,20 @@ const providers = getPaletteNames();
 const providers = getPaletteNames('colorbrewer');
 ```
 
+### Not a fan of the proposed API ? Just get the raw description of the palettes and use them as you wish
+
+For a given provider:
+
+```javascript
+getRawData('colorbrewer');
+```
+
+For all the provider (default):
+
+```javascript
+getRawData();
+```
+
 ## Other information
 
 Palette information is stored in the `src/palette.json` file.
