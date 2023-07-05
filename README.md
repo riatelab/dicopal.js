@@ -62,38 +62,43 @@ const cols = getColors('Pastel', 4); // Returns the "Pastel" palette with 4 colo
 Colors can also be reversed:
 
 ```javascript
-const cols = getColors('Pastel', 4, true); // Returns the "Pastel" palette with 4 colors, reversed
+const cols = getColors('Pastel', 4, true);
 // ['#DCB0F2', '#F89C74', '#F6CF71', '#66C5CC']
 ```
 
 ### List the existing palettes for a given number of colors
 
 ```javascript
-const palettes = getPalettes({ number: 3 }); // Returns 135 instances of palette
+// Returns 135 instances of palette with 3 colors
+const palettes = getPalettes({ number: 3 });
 ```
 
 ### List the existing palettes for a given type (sequential, diverging, qualitative)
 
 ```javascript
-const palettes = getPalettes({ type: 'qualitative' }); // Returns 160 instances of qualitative palettes
+// Returns 160 instances of qualitative palettes
+const palettes = getPalettes({ type: 'qualitative' });
 ```
 
 ### List the existing palettes for a given provider (ColorBrewer, Tableau, etc.)
 
 ```javascript
-const palettes = getPalettes({ provider: 'colorbrewer' }); // Returns 265 instances of colorbrewer palettes
+// Returns 265 instances of colorbrewer palettes
+const palettes = getPalettes({ provider: 'colorbrewer' });
 ```
 
 ### List the existing palettes for a given name (for example, 'Accent')
 
 ```javascript
-const palettes = getPalettes({ name: 'Accent' }); // Returns the 6 instances of the "Accent" palette
+// Returns the 6 instances of the "Accent" palette
+const palettes = getPalettes({ name: 'Accent' });
 ```
 
 ### List the existing palettes that match a set of criteria
 
 ```javascript
-const palettes = getPalettes({ type: 'qualitative', number: 10 }); // Returns the 12 instances of the palettes that are qualitative and have 10 colors
+// Returns the 12 instances of the palettes that are qualitative and have 10 colors
+const palettes = getPalettes({ type: 'qualitative', number: 10 });
 ```
 
 ### All the palettes or more criteria
@@ -101,7 +106,8 @@ const palettes = getPalettes({ type: 'qualitative', number: 10 }); // Returns th
 When no argument is provided, the `getPalettes` function returns all the palettes:
 
 ```javascript
-const allPalettes = getPalettes(); // Returns the 1600 instances of palettes
+// Returns the 1600 instances of palettes
+const allPalettes = getPalettes();
 ```
 
 You can then filter the palettes yourself by any combination of criteria:
@@ -133,11 +139,13 @@ const providers = getPaletteTypes(); // Returns the 3 types
 ### List the existing palette names
 
 ```javascript
-const providers = getPaletteNames(); // Returns the 179 names ('ArmyRose', 'BrBg', 'Accent', etc.)
+// Returns the 179 names ('ArmyRose', 'BrBg', 'Accent', etc.)
+const providers = getPaletteNames();
 ```
 
 ```javascript
-const providers = getPaletteNames('colorbrewer'); // Returns the 35 names ('BrBg', 'PRGn', etc.)
+// Returns the 35 names ('BrBg', 'PRGn', etc.)
+const providers = getPaletteNames('colorbrewer');
 ```
 
 ## Other information
