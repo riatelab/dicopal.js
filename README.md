@@ -167,7 +167,7 @@ getRawData();
 ## Other information
 
 Palette information is stored in the `src/palette.json` file.
-It is [generated in Python](https://gist.github.com/mthh/c846dd04ae88a43b277f965808108bfd) from various sources,
+It is [generated in Python](./generate-palette-descriptions.py) from various sources,
 notably the [palettable](https://github.com/jiffyclub/palettable)
 Python library (authored by [Matt Davis](https://github.com/jiffyclub))
 and the [dicopal](https://lig-tdcge.imag.fr/steamer/dicopal/index.html) RDF vocabulary which
