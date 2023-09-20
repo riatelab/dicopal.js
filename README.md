@@ -150,6 +150,13 @@ const providers = getPaletteNames();
 const providers = getPaletteNames('colorbrewer');
 ```
 
+### Get the number of classes for a given palette
+
+```javascript
+// Returns an array of numbers, like [3, 4, 5, 6, 7, 8]
+const numClasses = getPaletteNumbers('Pastel2');
+```
+
 ### Not a fan of the proposed API ? Just get the raw description of the palettes and use them as you wish
 
 For a given provider:

@@ -16,23 +16,21 @@ const plugins = [
   }),
   terser(),
 ];
-export default [
-  {
-    input,
-    output: {
+
+export default {
+  input,
+  output: [
+    {
       file: pkg.module,
       format: 'esm',
       sourcemap: true,
     },
-    plugins,
-  },
-  {
-    input,
-    output: {
+    {
       file: pkg.main,
-      format: "cjs",
+      format: "umd",
       sourcemap: true,
+      name: 'dicopal',
     },
-    plugins,
-  },
-];
+  ],
+  plugins,
+};

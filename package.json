@@ -1,6 +1,6 @@
 {
   "name": "dicopal",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Discrete color palettes for cartography and data visualization",
   "homepage": "https://github.com/riatelab/dicopal.js",
   "repository": {
@@ -13,6 +13,11 @@
   "type": "module",
   "main": "dist/index.min.js",
   "module": "dist/index.min.esm.js",
+  "exports": {
+    "esm": "dist/index.min.esm.js",
+    "default": "dist/index.min.js",
+    "require": "./dist/index.min.js"
+  },
   "types": "dist/index.d.ts",
   "files": [
     "dist"
