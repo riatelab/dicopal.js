@@ -10,7 +10,7 @@ import cbf from './cbf.json'
  * @property {string} DIVERGING - Diverging palette
  * @property {string} QUALITATIVE - Qualitative palette
  */
-enum PaletteType {
+export enum PaletteType {
   SEQUENTIAL = 'sequential',
   DIVERGING = 'diverging',
   QUALITATIVE = 'qualitative',
@@ -31,8 +31,9 @@ enum PaletteType {
  * @property {string} TABLEAU - Tableau palettes
  * @property {string} WESANDERSON - Wes Anderson palettes
  * @property {string} OKABEITO - Okabe & Ito's palette
+ * @property {string} JOSHUASTEVENS - Joshua Stevens' palettes
  */
-enum Provider {
+export enum Provider {
   CARTOCOLORS = 'cartocolors',
   CMOCEAN = 'cmocean',
   COLORBREWER = 'colorbrewer',
@@ -43,6 +44,7 @@ enum Provider {
   TABLEAU = 'tableau',
   WESANDERSON = 'wesanderson',
   OKABEITO = 'okabeito',
+  JOSHUASTEVENS = 'joshuastevens',
 }
 
 /**
@@ -57,7 +59,7 @@ enum Provider {
  * @property {string} [url] - Reference url
  * @property {boolean} [cbf] - Whether the palette is colorblind-friendly
  */
-type Palette = {
+export type Palette = {
   id: string;
   name: string;
   number: number;
