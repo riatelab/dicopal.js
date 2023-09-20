@@ -3,7 +3,8 @@
 ## 0.5.0 (2023-09-20)
 
 - Export missing types and enums (`Palette`, `Provider`, `Type`).
-- Add `getPaletteNumbers` function to return the available number of classes for a given palette.
+- Document `getPaletteNumbers` function in README.
+- Add some of Joshua Steven's palettes.
 - Build for 'esm' and 'umd' instead of 'esm' and 'cjs'.
 
 ## 0.4.0 (2023-07-05)
