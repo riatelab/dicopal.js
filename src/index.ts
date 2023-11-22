@@ -1,3 +1,6 @@
+import { range } from 'd3-array';
+import { quantize } from 'd3-interpolate';
+import { scaleLinear } from 'd3-scale';
 import data from './palettes.json';
 import cbf from './cbf.json'
 
@@ -266,4 +269,191 @@ export const getRawData = (provider?: Provider) => {
     return paletteDescriptions;
   }
   return paletteDescriptions[provider];
+}
+
+/**
+ * @description Helper to generate an asymmetric diverging palette, given an existing diverging palette name.
+ *
+ * @param {string} divergingSchemeName - Palette name
+ * @param {number} classLeft - Number of classes on the left
+ * @param {number} classRight - Number of classes on the right
+ * @param {boolean} [centralClass=true] - Whether to include a central class
+ * @param {boolean} [balanced=false] - Whether to balance the palette (i.e. the color progression is the same on the left and on the right)
+ * @return {string[]} - The generated palette, as an array of hexadecimal colors, of length classLeft + classRight + (centralClass ? 1 : 0).
+ */
+export function getAsymmetricDivergingPalette(
+  divergingSchemeName: string,
+  classLeft: number,
+  classRight: number,
+  centralClass: boolean = false,
+  balanced: boolean = false
+): string[] {
+  if (classLeft < 1) {
+    throw new Error("1 class or more are required on the left");
+  }
+  if (classRight < 1) {
+    throw new Error("1 class or more are required on the right");
+  }
+
+  const palettes = getPalettes({ name: divergingSchemeName });
+
+  if (palettes.length === 0) {
+    throw new Error(`No palette found for ${divergingSchemeName}`);
+  }
+
+  // Special case when only two classes are requested but this kind of
+  // scheme starts at 3 classes
+  if (!centralClass && classRight === 1 && classLeft === 1 && palettes[0].number > 2) {
+    const pal = palettes[0].number % 2 === 0 ? palettes[0] : palettes[1];
+    return [pal.colors[0], pal.colors[pal.colors.length - 1]];
+  }
+
+  if (!balanced) {
+    const colors = [];
+    const cl2 = classLeft * 2;
+    const cr2 = classRight * 2;
+
+    // Is there a palette long enough for this scheme in dicopal ?
+    const needToInterpolateLeft =
+      cl2 > palettes[palettes.length - 1].colors.length;
+    const needToInterpolateRight =
+      cr2 > palettes[palettes.length - 1].colors.length;
+
+    if (needToInterpolateLeft) {
+      // For now we skip the central class if any (so we skip palettes with an odd number of classes)
+      const palLeft =
+        palettes[palettes.length - 1].number % 2 === 0
+          ? palettes[palettes.length - 1]
+          : palettes[palettes.length - 2];
+      const baseColors = palLeft.colors.slice(0, palLeft.number / 2);
+      colors.push(
+        ...quantize(
+          scaleLinear()
+            .domain(
+              range(0, 1 + 1 / baseColors.length, 1 / (baseColors.length - 1))
+            )
+            .range(baseColors as never[]),
+          classLeft
+        )
+      );
+    } else {
+      const palLeft = getPalette(divergingSchemeName, cl2) as Palette
+      colors.push(...palLeft.colors.slice(0, classLeft));
+    }
+
+    if (centralClass) {
+      const pal =
+        palettes[palettes.length - 1].number % 2 !== 0
+          ? palettes[palettes.length - 1]
+          : palettes[palettes.length - 2];
+      colors.push(pal.colors[Math.floor(pal.colors.length / 2)]);
+    }
+
+    if (needToInterpolateRight) {
+      // For now we skip the central class if any (so we skip palettes with an odd number of classes)
+      const palRight =
+        palettes[palettes.length - 1].number % 2 === 0
+          ? palettes[palettes.length - 1]
+          : palettes[palettes.length - 2];
+      const baseColors = palRight.colors.slice(
+        palRight.number / 2,
+        palRight.number
+      );
+      colors.push(
+        ...quantize(
+          scaleLinear()
+            .domain(
+              range(0, 1 + 1 / baseColors.length, 1 / (baseColors.length - 1))
+            )
+            .range(baseColors as never[]),
+          classRight
+        )
+      );
+    } else {
+      const palRight = getPalette(divergingSchemeName, cr2) as Palette;
+      colors.push(...palRight.colors.slice(classRight, palRight.colors.length));
+    }
+    return colors as string[];
+  } else {
+    const max = Math.max(classLeft, classRight);
+    const nColors = max * 2 + Number(centralClass);
+
+    // Is there a palette long enough for this scheme in dicopal ?
+    const needToInterpolate =
+      nColors > palettes[palettes.length - 1].colors.length;
+
+    const colors = [];
+    const cl2 = classLeft * 2;
+    const cr2 = classRight * 2;
+
+    if (needToInterpolate) {
+      const refPal = centralClass
+        ? palettes[palettes.length - 1].number % 2 !== 0
+          ? palettes[palettes.length - 1]
+          : palettes[palettes.length - 2]
+        : palettes[palettes.length - 1].number % 2 === 0
+          ? palettes[palettes.length - 1]
+          : palettes[palettes.length - 2];
+
+      const baseColorsLeft = refPal.colors.slice(0, refPal.number / 2);
+      const baseColorsRight = refPal.colors.slice(
+        Math.ceil(refPal.number / 2),
+        refPal.number
+      );
+
+      const colorsLeft = quantize(
+        scaleLinear()
+          .domain(
+            range(
+              0,
+              1 + 1 / baseColorsLeft.length,
+              1 / (baseColorsLeft.length - 1)
+            )
+          )
+          .range(baseColorsLeft as never[]),
+        max
+      );
+
+      const colorsRight = quantize(
+        scaleLinear()
+          .domain(
+            range(
+              0,
+              1 + 1 / baseColorsRight.length,
+              1 / (baseColorsRight.length - 1)
+            )
+          )
+          .range(baseColorsRight as never[]),
+        max
+      );
+      colors.push(...colorsLeft.reverse().slice(0, classLeft).reverse());
+      if (centralClass) {
+        colors.push(refPal.colors[Math.floor(refPal.colors.length / 2)]);
+      }
+      colors.push(...colorsRight.slice(0, classRight));
+    } else {
+      const refPal = getPalette(divergingSchemeName, nColors) as Palette;
+      if (classRight > classLeft) {
+        colors.push(...refPal.colors.slice(classRight - classLeft, classRight));
+        if (centralClass) {
+          colors.push(refPal.colors.slice(max, max + 1));
+        }
+        colors.push(...refPal.colors.slice(classRight, refPal.colors.length));
+      } else {
+        const diff = classLeft - classRight;
+        colors.push(...refPal.colors.slice(0, classLeft));
+        if (centralClass) {
+          colors.push(refPal.colors.slice(max, max + 1));
+        }
+        colors.push(
+          ...refPal.colors.slice(
+            refPal.colors.length - classRight - diff,
+            refPal.colors.length - diff
+          )
+        );
+      }
+    }
+
+    return colors as string[];
+  }
 }

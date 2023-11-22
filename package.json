@@ -32,9 +32,18 @@
     "email": "matthieu.viry@cnrs.fr"
   },
   "license": "Apache-2.0",
+  "dependencies": {
+    "d3-array": "^3.2.4",
+    "d3-interpolate": "^3.0.1",
+    "d3-scale": "^4.0.2"
+  },
   "devDependencies": {
     "@rollup/plugin-json": "^6.0.0",
+    "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.3",
+    "@types/d3-array": "^3.2.1",
+    "@types/d3-interpolate": "^3.0.4",
+    "@types/d3-scale": "^4.0.8",
     "rollup": "^3.26.1",
     "rollup-plugin-typescript2": "^0.35.0",
     "typescript": "^5.1.6"

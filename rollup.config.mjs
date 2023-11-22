@@ -1,3 +1,4 @@
+import { nodeResolve } from '@rollup/plugin-node-resolve';
 import typescript from 'rollup-plugin-typescript2';
 import json from '@rollup/plugin-json';
 import terser from '@rollup/plugin-terser';
@@ -7,6 +8,7 @@ import ts from 'typescript';
 const input = "src/index.ts";
 
 const plugins = [
+  nodeResolve(),
   json({
     preferConst: true,
     compact: true,
