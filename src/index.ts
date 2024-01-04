@@ -272,7 +272,7 @@ export const getRawData = (provider?: Provider) => {
 }
 
 /**
- * @description Helper to generate an asymmetric diverging palette, given an existing diverging palette name.
+ * @description Helper to generate colors for asymmetric diverging palettes, given an existing diverging palette name.
  *
  * @param {string} divergingSchemeName - Palette name
  * @param {number} classLeft - Number of classes on the left
@@ -280,8 +280,9 @@ export const getRawData = (provider?: Provider) => {
  * @param {boolean} [centralClass=true] - Whether to include a central class
  * @param {boolean} [balanced=false] - Whether to balance the palette (i.e. the color progression is the same on the left and on the right)
  * @return {string[]} - The generated palette, as an array of hexadecimal colors, of length classLeft + classRight + (centralClass ? 1 : 0).
+ * @throws {Error} - If the number of classes is not valid (i.e. < 1) or if no palette is found for the requested name.
  */
-export function getAsymmetricDivergingPalette(
+export function getAsymmetricDivergingColors(
   divergingSchemeName: string,
   classLeft: number,
   classRight: number,
@@ -456,4 +457,56 @@ export function getAsymmetricDivergingPalette(
 
     return colors as string[];
   }
+}
+
+/**
+ * @description Helper to generate colors for a (maybe interpolated) sequential palette, given an existing sequential palette name.
+ *
+ * @param {string} sequentialSchemeName - Palette name
+ * @param {number} classNumber - Number of classes
+ * @param {boolean} [reverse=false] - Whether to reverse the order of the colors
+ * @return {string[]} - The generated palette, as an array of hexadecimal colors, of length classNumber.
+ * @throws {Error} - If the number of classes is not valid (i.e. < 2) or if no palette is found for the requested name.
+ */
+export function getSequentialColors(
+  sequentialSchemeName: string,
+  classNumber: number,
+  reverse: boolean = false
+): string[] {
+  // We only generate "palettes", i.e. schemes with at least 2 classes
+  if (classNumber < 2) {
+    throw new Error("2 class or more are required");
+  }
+
+  // Get all the palettes with the requested name
+  const palettes = getPalettes({ name: sequentialSchemeName });
+
+  // If no palette is found it means that the requested name is not valid
+  if (palettes.length === 0) {
+    throw new Error(`No palette found for ${sequentialSchemeName}`);
+  }
+
+  // Is there a palette long enough for this scheme in dicopal ?
+  const needToInterpolate =
+    classNumber > palettes[palettes.length - 1].colors.length || classNumber < palettes[0].colors.length;
+
+  if (needToInterpolate) {
+    // There is no palette long enough for this scheme in dicopal
+    // so we interpolate the colors of the longest palette
+    const pal = palettes[palettes.length - 1];
+    const baseColors = pal.colors;
+    return quantize(
+      scaleLinear()
+        .domain(
+          range(0, 1 + 1 / baseColors.length, 1 / (baseColors.length - 1))
+        )
+        .range(reverse ? baseColors.slice().reverse() as never[] : baseColors as never[]),
+      classNumber
+    ) as unknown as string[];
+  }
+
+  // Requested number of classes is in the range of the palettes
+  // so we can just return the corresponding colors
+  const pal = getPalette(sequentialSchemeName, classNumber) as Palette;
+  return reverse ? pal.colors.slice().reverse() : pal.colors.slice();
 }
