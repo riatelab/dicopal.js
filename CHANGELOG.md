@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.6.0 (unreleased)
+## 0.6.0 (2024-01-04)
 
 - Enable the creation of asymmetric diverging palettes (e.g. 3 colors for the left side and 4 colors for the right side), either
   balanced (i.e. the perceptual distance between the colors is the same on both sides) or not. This is useful for creating
