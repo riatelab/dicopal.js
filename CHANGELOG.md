@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.1 (2024-01-29)
+
+- Fix order of `exports` fields `in package.json` (should fix [#4](https://github.com/riatelab/dicopal.js/issues/4)).
+
 ## 0.6.0 (2024-01-04)
 
 - Enable the creation of asymmetric diverging palettes (e.g. 3 colors for the left side and 4 colors for the right side), either
