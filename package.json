@@ -14,9 +14,9 @@
   "main": "dist/index.min.js",
   "module": "dist/index.min.esm.js",
   "exports": {
-    "esm": "dist/index.min.esm.js",
-    "default": "dist/index.min.js",
-    "require": "./dist/index.min.js"
+    "import": "./dist/index.min.esm.js",
+    "require": "./dist/index.min.js",
+    "default": "./dist/index.min.js"
   },
   "types": "dist/index.d.ts",
   "files": [
