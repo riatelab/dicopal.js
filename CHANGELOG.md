@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.2 (2024-02-06)
+
+- Fix values returned by `getAsymmetricDivergingColors` and `getSequentialColors` to always be hexadecimals (instead of mixed hexadecimals and RGB strings).
+
+- Fix central class value for `getAsymmetricDivergingColors` when balanced is `true` (was sometimes included in a one-member array instead of being a single value).
+
 ## 0.6.1 (2024-01-29)
 
 - Fix order of `exports` fields `in package.json` (should fix [#4](https://github.com/riatelab/dicopal.js/issues/4)).

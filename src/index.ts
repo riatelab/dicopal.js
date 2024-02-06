@@ -272,6 +272,17 @@ export const getRawData = (provider?: Provider) => {
 }
 
 /**
+ * Convert a color definition in rgb (e.g. 'rgb(255, 0, 0)') to hexadecimal (e.g. '#ff0000').
+ *
+ * @param rgbString
+ * @returns {string} - The hexadecimal color
+ */
+const rgbToHex = (rgbString: string): string => {
+  const [r, g, b] = rgbString.match(/\d+/g)!.map((x) => parseInt(x, 10));
+  return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+}
+
+/**
  * @description Helper to generate colors for asymmetric diverging palettes, given an existing diverging palette name.
  *
  * @param {string} divergingSchemeName - Palette name
@@ -383,7 +394,7 @@ export function getAsymmetricDivergingColors(
     const needToInterpolate =
       nColors > palettes[palettes.length - 1].colors.length;
 
-    const colors = [];
+    const colors: string[] = [];
     const cl2 = classLeft * 2;
     const cr2 = classRight * 2;
 
@@ -427,24 +438,24 @@ export function getAsymmetricDivergingColors(
           .range(baseColorsRight as never[]),
         max
       );
-      colors.push(...colorsLeft.reverse().slice(0, classLeft).reverse());
+      colors.push(...colorsLeft.reverse().slice(0, classLeft).reverse() as never[]);
       if (centralClass) {
         colors.push(refPal.colors[Math.floor(refPal.colors.length / 2)]);
       }
-      colors.push(...colorsRight.slice(0, classRight));
+      colors.push(...colorsRight.slice(0, classRight) as never[]);
     } else {
       const refPal = getPalette(divergingSchemeName, nColors) as Palette;
       if (classRight > classLeft) {
         colors.push(...refPal.colors.slice(classRight - classLeft, classRight));
         if (centralClass) {
-          colors.push(refPal.colors.slice(max, max + 1));
+          colors.push(...refPal.colors.slice(max, max + 1));
         }
         colors.push(...refPal.colors.slice(classRight, refPal.colors.length));
       } else {
         const diff = classLeft - classRight;
         colors.push(...refPal.colors.slice(0, classLeft));
         if (centralClass) {
-          colors.push(refPal.colors.slice(max, max + 1));
+          colors.push(...refPal.colors.slice(max, max + 1));
         }
         colors.push(
           ...refPal.colors.slice(
@@ -455,7 +466,7 @@ export function getAsymmetricDivergingColors(
       }
     }
 
-    return colors as string[];
+    return colors.map((d: string) => rgbToHex(d));
   }
 }
 
@@ -502,7 +513,7 @@ export function getSequentialColors(
         )
         .range(reverse ? baseColors.slice().reverse() as never[] : baseColors as never[]),
       classNumber
-    ) as unknown as string[];
+    ).map((d: unknown) => rgbToHex(d as string));
   }
 
   // Requested number of classes is in the range of the palettes

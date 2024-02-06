@@ -1,6 +1,6 @@
 {
   "name": "dicopal",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "Discrete color palettes for cartography and data visualization",
   "homepage": "https://github.com/riatelab/dicopal.js",
   "repository": {
@@ -38,15 +38,15 @@
     "d3-scale": "^4.0.2"
   },
   "devDependencies": {
-    "@rollup/plugin-json": "^6.0.0",
+    "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
-    "@rollup/plugin-terser": "^0.4.3",
+    "@rollup/plugin-terser": "^0.4.4",
     "@types/d3-array": "^3.2.1",
     "@types/d3-interpolate": "^3.0.4",
     "@types/d3-scale": "^4.0.8",
-    "rollup": "^3.26.1",
-    "rollup-plugin-typescript2": "^0.35.0",
-    "typescript": "^5.1.6"
+    "rollup": "^3.29.4",
+    "rollup-plugin-typescript2": "^0.36.0",
+    "typescript": "^5.3.3"
   },
   "keywords": [
     "color",
