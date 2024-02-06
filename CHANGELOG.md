@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.3 (2024-02-06)
+
+- Fix values returned by `getAsymmetricDivergingColors` and `getSequentialColors`.
+
 ## 0.6.2 (2024-02-06)
 
 - Fix values returned by `getAsymmetricDivergingColors` and `getSequentialColors` to always be hexadecimals (instead of mixed hexadecimals and RGB strings).

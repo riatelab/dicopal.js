@@ -278,6 +278,7 @@ export const getRawData = (provider?: Provider) => {
  * @returns {string} - The hexadecimal color
  */
 const rgbToHex = (rgbString: string): string => {
+  if (rgbString.startsWith('#')) return rgbString;
   const [r, g, b] = rgbString.match(/\d+/g)!.map((x) => parseInt(x, 10));
   return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
 }
