@@ -323,8 +323,10 @@ export function getAsymmetricDivergingColors(
 
   if (!balanced) {
     const colors = [];
-    const cl2 = classLeft * 2;
-    const cr2 = classRight * 2;
+    let cl2 = classLeft * 2;
+    let cr2 = classRight * 2;
+
+    const firstPaletteLength = palettes[0].colors.length;
 
     // Is there a palette long enough for this scheme in dicopal ?
     const needToInterpolateLeft =
@@ -350,7 +352,8 @@ export function getAsymmetricDivergingColors(
         )
       );
     } else {
-      const palLeft = getPalette(divergingSchemeName, cl2) as Palette
+      const lengthPal = cl2 < firstPaletteLength ? firstPaletteLength : cl2;
+      const palLeft = getPalette(divergingSchemeName, lengthPal) as Palette
       colors.push(...palLeft.colors.slice(0, classLeft));
     }
 
@@ -383,8 +386,9 @@ export function getAsymmetricDivergingColors(
         )
       );
     } else {
-      const palRight = getPalette(divergingSchemeName, cr2) as Palette;
-      colors.push(...palRight.colors.slice(classRight, palRight.colors.length));
+      const lengthPal = cr2 < firstPaletteLength ? firstPaletteLength : cr2;
+      const palRight = getPalette(divergingSchemeName, lengthPal) as Palette;
+      colors.push(...palRight.colors.slice(lengthPal - classRight, lengthPal));
     }
     return colors as string[];
   } else {
@@ -451,7 +455,7 @@ export function getAsymmetricDivergingColors(
         if (centralClass) {
           colors.push(...refPal.colors.slice(max, max + 1));
         }
-        colors.push(...refPal.colors.slice(classRight, refPal.colors.length));
+        colors.push(...refPal.colors.slice(classRight + 1, refPal.colors.length));
       } else {
         const diff = classLeft - classRight;
         colors.push(...refPal.colors.slice(0, classLeft));
