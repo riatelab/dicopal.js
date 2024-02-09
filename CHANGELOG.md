@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.4 (2024-02-09)
+
+- Fix values returned by `getAsymmetricDivergingColors` for unbalanced palettes (when requesting only one class on right or left side 
+  and when the first declination of the original palette includes a central class) and for balanced palettes (on some case on the right side, when there is no need for interpolating).
+
 ## 0.6.3 (2024-02-06)
 
 - Fix values returned by `getAsymmetricDivergingColors` and `getSequentialColors`.
