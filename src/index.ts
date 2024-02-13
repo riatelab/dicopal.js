@@ -77,7 +77,8 @@ export type Palette = {
 const paletteDescriptions = data as { [key in Provider]: any };
 
 const allProviders = Object.keys(paletteDescriptions);
-const allTypes = Object.keys(PaletteType).map((key) => PaletteType[key as keyof typeof PaletteType]);
+const allTypes = Object.keys(PaletteType)
+  .map((key) => PaletteType[key as keyof typeof PaletteType]);
 
 /**
  * @description Get a palette, given a name and number of classes. If no palette is found, undefined is returned.
@@ -195,7 +196,9 @@ const getAllPalettes = (): Palette[] => {
  * @param {string} [options.name] - Palette name
  * @returns {Palette[]} - Palettes matching the requested criteria, or all palettes if no criteria is provided
  */
-export const getPalettes = (options: { type?: string, number?: number, provider?: string, name?: string} = {}): Palette[] => {
+export const getPalettes = (
+  options: { type?: string, number?: number, provider?: string, name?: string} = {},
+): Palette[] => {
   const { type, number, provider, name } = options;
 
   const allPalettes = getAllPalettes();
@@ -279,7 +282,8 @@ export const getRawData = (provider?: Provider) => {
  */
 const rgbToHex = (rgbString: string): string => {
   if (rgbString.startsWith('#')) return rgbString;
-  const [r, g, b] = rgbString.match(/\d+/g)!.map((x) => parseInt(x, 10));
+  const [r, g, b] = rgbString
+    .match(/\d+/g)!.map((x) => parseInt(x, 10));
   return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
 }
 
@@ -291,6 +295,7 @@ const rgbToHex = (rgbString: string): string => {
  * @param {number} classRight - Number of classes on the right
  * @param {boolean} [centralClass=true] - Whether to include a central class
  * @param {boolean} [balanced=false] - Whether to balance the palette (i.e. the color progression is the same on the left and on the right)
+ * @param {boolean} [reversed=false] - Whether to reverse the order of the colors
  * @return {string[]} - The generated palette, as an array of hexadecimal colors, of length classLeft + classRight + (centralClass ? 1 : 0).
  * @throws {Error} - If the number of classes is not valid (i.e. < 1) or if no palette is found for the requested name.
  */
@@ -298,8 +303,9 @@ export function getAsymmetricDivergingColors(
   divergingSchemeName: string,
   classLeft: number,
   classRight: number,
-  centralClass: boolean = false,
-  balanced: boolean = false
+  centralClass: boolean = true,
+  balanced: boolean = false,
+  reversed: boolean = false
 ): string[] {
   if (classLeft < 1) {
     throw new Error("1 class or more are required on the left");
@@ -314,11 +320,17 @@ export function getAsymmetricDivergingColors(
     throw new Error(`No palette found for ${divergingSchemeName}`);
   }
 
+  // If the requested scheme is not a sequential scheme, we throw an error
+  if (palettes[0].type !== PaletteType.DIVERGING) {
+    throw new Error(`${divergingSchemeName} is not a diverging scheme`);
+  }
+
   // Special case when only two classes are requested but this kind of
   // scheme starts at 3 classes
   if (!centralClass && classRight === 1 && classLeft === 1 && palettes[0].number > 2) {
     const pal = palettes[0].number % 2 === 0 ? palettes[0] : palettes[1];
-    return [pal.colors[0], pal.colors[pal.colors.length - 1]];
+    const cols = [pal.colors[0], pal.colors[pal.colors.length - 1]];
+    return reversed ? cols.reverse() : cols;
   }
 
   if (!balanced) {
@@ -390,7 +402,9 @@ export function getAsymmetricDivergingColors(
       const palRight = getPalette(divergingSchemeName, lengthPal) as Palette;
       colors.push(...palRight.colors.slice(lengthPal - classRight, lengthPal));
     }
-    return colors as string[];
+    return reversed
+      ? colors.reverse() as string[]
+      : colors as string[];
   } else {
     const max = Math.max(classLeft, classRight);
     const nColors = max * 2 + Number(centralClass);
@@ -400,8 +414,6 @@ export function getAsymmetricDivergingColors(
       nColors > palettes[palettes.length - 1].colors.length;
 
     const colors: string[] = [];
-    const cl2 = classLeft * 2;
-    const cr2 = classRight * 2;
 
     if (needToInterpolate) {
       const refPal = centralClass
@@ -455,7 +467,7 @@ export function getAsymmetricDivergingColors(
         if (centralClass) {
           colors.push(...refPal.colors.slice(max, max + 1));
         }
-        colors.push(...refPal.colors.slice(classRight + 1, refPal.colors.length));
+        colors.push(...refPal.colors.slice(classRight + Number(centralClass), refPal.colors.length));
       } else {
         const diff = classLeft - classRight;
         colors.push(...refPal.colors.slice(0, classLeft));
@@ -471,12 +483,15 @@ export function getAsymmetricDivergingColors(
       }
     }
 
-    return colors.map((d: string) => rgbToHex(d));
+    return reversed
+      ? colors.map((d: string) => rgbToHex(d)).reverse()
+      : colors.map((d: string) => rgbToHex(d));
   }
 }
 
 /**
- * @description Helper to generate colors for a (maybe interpolated) sequential palette, given an existing sequential palette name.
+ * @description Helper to generate colors for a (maybe interpolated) sequential palette,
+ * given an existing sequential palette name.
  *
  * @param {string} sequentialSchemeName - Palette name
  * @param {number} classNumber - Number of classes
@@ -500,6 +515,11 @@ export function getSequentialColors(
   // If no palette is found it means that the requested name is not valid
   if (palettes.length === 0) {
     throw new Error(`No palette found for ${sequentialSchemeName}`);
+  }
+
+  // If the requested scheme is not a sequential scheme, we throw an error
+  if (palettes[0].type !== PaletteType.SEQUENTIAL) {
+    throw new Error(`${sequentialSchemeName} is not a sequential scheme`);
   }
 
   // Is there a palette long enough for this scheme in dicopal ?
