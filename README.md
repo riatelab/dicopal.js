@@ -169,8 +169,9 @@ It takes the following arguments:
 - `divergingSchemeName` (string): the name of the diverging scheme to use (e.g. 'RdYlBu')
 - `leftNumber` (number): the number of colors to use on the left side
 - `rightNumber` (number): the number of colors to use on the right side
-- `centralClass` (boolean - optional): whether to include a central class (default: false)
+- `centralClass` (boolean - optional): whether to include a central class (default: true)
 - `balanced` (boolean - optional): whether to balance the colors on both sides (default: false)
+- `reverse` (boolean - optional): whether to reverse the palette (default: false)
 
 #### Balanced
 
@@ -230,7 +231,8 @@ It is [generated in Python](./generate-palette-descriptions.py) from various sou
 notably the [palettable](https://github.com/jiffyclub/palettable)
 Python library (authored by [Matt Davis](https://github.com/jiffyclub))
 and the [dicopal](https://lig-tdcge.imag.fr/steamer/dicopal/index.html) RDF vocabulary which
-both provide a list of palettes with their colors and metadata.
+both provide a list of palettes with their colors and metadata as well
+as from [Joshua Stevens' palettes](https://github.com/jscarto).
 
 ## License
 
