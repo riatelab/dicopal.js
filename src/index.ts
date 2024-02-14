@@ -333,6 +333,12 @@ export function getAsymmetricDivergingColors(
     return reversed ? cols.reverse() : cols;
   }
 
+  // If the number of classes is the same on the left and on the right
+  // we have a balanced palette
+  if (classRight === classLeft && !balanced) {
+    balanced = true;
+  }
+
   if (!balanced) {
     const colors = [];
     let cl2 = classLeft * 2;
@@ -403,8 +409,8 @@ export function getAsymmetricDivergingColors(
       colors.push(...palRight.colors.slice(lengthPal - classRight, lengthPal));
     }
     return reversed
-      ? colors.reverse() as string[]
-      : colors as string[];
+      ? colors.map((d) => rgbToHex(d as string)).reverse() as string[]
+      : colors.map((d) => rgbToHex(d as string)) as string[];
   } else {
     const max = Math.max(classLeft, classRight);
     const nColors = max * 2 + Number(centralClass);
