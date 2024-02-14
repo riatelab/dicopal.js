@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased
+
+- Add `reverse` optional parameter to `getAsymmetricDivergingColors` (Fixes [#6](https://github.com/riatelab/dicopal.js/issues/6)).
+
+- Fix `getAsymmetricDivergingColors` to return the correct number of colors when `balanced` is `true` and 'classLeft' is less than 'classRight' and central class is false (Fixes [#7](https://github.com/riatelab/dicopal.js/issues/7)).
+
+- Add test suite, notably for `getAsymmetricDivergingColors` that tests the previously reported issues (#5, #6, #7) as well
+  as a few other assumptions.
+
+- Update to rollup v4.
+
 ## 0.6.4 (2024-02-09)
 
 - Fix values returned by `getAsymmetricDivergingColors` for unbalanced palettes (when requesting only one class on right or left side 
@@ -39,7 +50,7 @@
 
 - Add `getRawData` function to return the raw data used by the package.
 - Add `getPaletteNumbers` function to return the available number of classes for a given palette.
-
+g
 ## 0.3.0 (2023-07-05)
 
 - Specify location of type definitions in `package.json` to avoid warnings when using the package in a TypeScript project.
