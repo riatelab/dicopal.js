@@ -2,11 +2,16 @@
 
 ## Unreleased
 
+- New: Add 'Observable10' categorical palette from [d3-scale-chromatic](https://d3js.org/d3-scale-chromatic/categorical#schemeObservable10) (fixes [#9](https://github.com/riatelab/dicopal.js/issues/9)).
+
+- New: Add functionality to add custom palette, with `addPalette`, to the package (fixes [#8](https://github.com/riatelab/dicopal.js/issues/8)).
+  Note that it allows to handle custom palettes in the same way as the built-in ones, including calling `getSequentialColors` and `getAsymmetricDivergingColors` on them,
+  but for the latter to work on all cases (balanced, unbalanced, with central classe or not, etc.), one must have added at least 2 variations of the targeted diverging palettes,
+  one with a central class (and at least a total of 5 colors) and one without (and at least a total of 4 colors).
+
 - Fix `tsconfig.json` so it doesn't output unnecessary files in `dist` folder.
 
 - Opt for a more compact representation of palettes (fixes [#10](https://github.com/riatelab/dicopal.js/issues/10)). The minified dicopal file is now about 150 kB instead of 200 kB.
-
-- Add 'Observable10' categorical palette from [d3-scale-chromatic](https://d3js.org/d3-scale-chromatic/categorical#schemeObservable10) (fixes [#9](https://github.com/riatelab/dicopal.js/issues/9)).
 
 ## 0.7.0 (2024-02-14)
 

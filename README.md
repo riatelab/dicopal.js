@@ -203,6 +203,52 @@ It takes the following arguments:
 const pal = getSequentialColors('Blues', 12);
 ```
 
+### Add your palettes to Dicopal to benefit from the API *[experimental - unreleased yet]*
+
+You can add your own palettes to Dicopal at runtime:
+
+```javascript
+// Add a qualitative palette
+addPalette({
+  type: 'qualitative', // Mandatory, amongst ('diverging', 'qualitative', 'sequential')
+  name: 'MyPalette', // Mandatory, string
+  colors: ['#FF0000', '#00FF00', '#0000FF'], // Mandatory, array of HEX colors as string
+  provider: 'MyOrganisation', // Mandatory, string
+  url: 'https://example.com' // Optional, string
+});
+
+// Add a sequential palette
+addPalette({
+  type: 'sequential',
+  name: 'MySequentialPalette',
+  colors: ['#FF0000', '#FF3300', '#FF6600', '#FF9900', '#FFCC00', '#FFFF00', '#FFFF33'],
+  provider: 'MyOrganisation',
+  url: 'https://example.com'
+});
+
+// Note that for the 'getAsymmetricDivergingColors' function to work correctly
+// on the added palette, you must add at least two variations of the palette,
+// one with a central class (and at least a total of 5 colors) and one without
+// (and at least a total of 4 colors).
+addPalette({
+  name: 'NewDivergingPalette',
+  type: 'diverging',
+  colors: ['#D7191C', '#FDAE61', '#d7d7d7', '#ABDDA4', '#35AF24'],
+  provider: 'MyOrg',
+  url: 'https://example.com',
+});
+
+addPalette({
+  name: 'NewDivergingPalette',
+  type: 'diverging',
+  colors: ['#D7191C', '#efc091', '#b8e1b2', '#35AF24'],
+  provider: 'MyOrg',
+  url: 'https://example.com',
+});
+```
+
+You can then use the `getPalette`, `getColors`, `getPalettes`, `getPaletteProviders`, `getPaletteTypes`, `getPaletteNames`, `getPaletteNumbers`, `getAsymmetricDivergingColors` and `getSequentialColors` functions as usual.
+
 ### Not a fan of the proposed API ? Just get the raw description of the palettes and use them as you wish
 
 For a given provider:
