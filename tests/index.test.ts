@@ -272,4 +272,54 @@ describe('addPalette', () => {
     expect(colors4).toBeDefined();
     expect(colors4.length).toBe(8);
   });
+
+  it('should add a palette to the list of palettes and succeed in using helpers for diverging palettes (3)', () => {
+    addPalette({
+      name: 'NewDivergingPalette',
+      type: 'diverging',
+      colors: ['#a1292b', '#D7191C', '#FDAE61', '#d7d7d7', '#ABDDA4', '#35AF24', '#177a09'],
+      provider: 'MyOrg',
+      url: 'https://example.com',
+    });
+
+    addPalette({
+      name: 'NewDivergingPalette',
+      type: 'diverging',
+      colors: ['#a1292b', '#D7191C', '#FDAE61', '#ABDDA4', '#35AF24', '#177a09'],
+      provider: 'MyOrg',
+      url: 'https://example.com',
+    });
+
+    const colors1 = getAsymmetricDivergingColors('NewDivergingPalette', 3, 5, true, true);
+    expect(colors1).toBeDefined();
+    expect(colors1.length).toBe(9);
+
+    const colors2 = getAsymmetricDivergingColors('NewDivergingPalette', 3, 5, false, true);
+    expect(colors2).toBeDefined();
+    expect(colors2.length).toBe(8);
+
+    const colors3 = getAsymmetricDivergingColors('NewDivergingPalette', 3, 5, true, false);
+    expect(colors3).toBeDefined();
+    expect(colors3.length).toBe(9);
+
+    const colors4 = getAsymmetricDivergingColors('NewDivergingPalette', 3, 5, false, false);
+    expect(colors4).toBeDefined();
+    expect(colors4.length).toBe(8);
+
+    const colors5 = getAsymmetricDivergingColors('NewDivergingPalette', 1, 1, true, true);
+    expect(colors5).toBeDefined();
+    expect(colors5.length).toBe(3);
+
+    const colors6 = getAsymmetricDivergingColors('NewDivergingPalette', 2, 1, true, false);
+    expect(colors6).toBeDefined();
+    expect(colors6.length).toBe(4);
+
+    const colors7 = getAsymmetricDivergingColors('NewDivergingPalette', 2, 3, true, true);
+    expect(colors7).toBeDefined();
+    expect(colors7.length).toBe(6);
+
+    const colors8 = getAsymmetricDivergingColors('NewDivergingPalette', 10, 12, false, false);
+    expect(colors8).toBeDefined();
+    expect(colors8.length).toBe(22);
+  });
 });
