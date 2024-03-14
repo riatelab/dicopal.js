@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Fix `tsconfig.json` so it doesn't output unnecessary files in `dist` folder.
+
+- Opt for a more compact representation of palettes (fixes [#10](https://github.com/riatelab/dicopal.js/issues/10)). The minified dicopal file is now about 150 kB instead of 200 kB.
+
+- Add 'Observable10' categorical palette from [d3-scale-chromatic](https://d3js.org/d3-scale-chromatic/categorical#schemeObservable10) (fixes [#9](https://github.com/riatelab/dicopal.js/issues/9)).
+
 ## 0.7.0 (2024-02-14)
 
 - New: Add `reverse` optional parameter to `getAsymmetricDivergingColors` (Fixes [#6](https://github.com/riatelab/dicopal.js/issues/6)).

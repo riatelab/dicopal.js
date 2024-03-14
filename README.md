@@ -15,8 +15,9 @@
 > - [MyCarta](https://mycartablog.com/color-palettes/)
 > - [Tableau](https://help.tableau.com/current/pro/desktop/en-us/formatting_create_custom_colors.htm#hex-values-for-discontinued-color-palettes)
 > - [The Wes Anderson Palettes blog](https://wesandersonpalettes.tumblr.com/)
-> - [Masataka Okabe and Kei Ito's Color Universal Design (CUD) palette](https://jfly.uni-koeln.de/color/)
 > - [Joshua Stevens' palettes](https://www.joshuastevens.net/)
+> - [Masataka Okabe and Kei Ito's Color Universal Design (CUD) categorical palette](https://jfly.uni-koeln.de/color/)
+> - [D3 "Observable10" categorical palette](https://d3js.org/d3-scale-chromatic/categorical#schemeObservable10)
 
 ⏩ [Browse all the available palettes](https://observablehq.com/@mthh/hello-dicopal)  
 ⏩ [Example about the creation of asymmetric diverging palettes](https://observablehq.com/@mthh/asymmetric-diverging-schemes-with-dicopal)
