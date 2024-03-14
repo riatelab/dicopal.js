@@ -334,6 +334,7 @@ export function getAsymmetricDivergingColors(
   }
 
   const palettes = getPalettes({ name: divergingSchemeName });
+  palettes.sort((a, b) => a.number - b.number);
 
   if (palettes.length === 0) {
     throw new Error(`No palette found for ${divergingSchemeName}`);
@@ -347,8 +348,23 @@ export function getAsymmetricDivergingColors(
   // Special case when only two classes are requested but this kind of
   // scheme starts at 3 classes
   if (!centralClass && classRight === 1 && classLeft === 1 && palettes[0].number > 2) {
-    const pal = palettes[0].number % 2 === 0 ? palettes[0] : palettes[1];
+    // Find a palette with 2 classes or an even number of classes
+    const pal = palettes.find((p) => p.number === 2) || palettes.find((p) => p.number % 2 === 0);
+    if (!pal) throw new Error(`Not enough variations of the ${divergingSchemeName} palette available to interpolate to the required parameters`);
     const cols = [pal.colors[0], pal.colors[pal.colors.length - 1]];
+    return reversed ? cols.reverse() : cols;
+  }
+
+  // Special case when the number of classes is 1 on both sides
+  if (centralClass && classRight === 1 && classLeft === 1) {
+    // Find a palette with 3 classes or an odd number of classes
+    const pal = palettes.find((p) => p.number === 3) || palettes.find((p) => p.number % 2 !== 0);
+    if (!pal) throw new Error(`Not enough variations of the ${divergingSchemeName} palette available to interpolate to the required parameters`);
+    const cols = [
+      pal.colors[0],
+      pal.colors[Math.floor(pal.colors.length / 2)],
+      pal.colors[pal.colors.length - 1],
+    ];
     return reversed ? cols.reverse() : cols;
   }
 
@@ -435,8 +451,7 @@ export function getAsymmetricDivergingColors(
     const nColors = max * 2 + Number(centralClass);
 
     // Is there a palette long enough for this scheme in dicopal ?
-    const needToInterpolate =
-      nColors > palettes[palettes.length - 1].colors.length;
+    const needToInterpolate = nColors > palettes[palettes.length - 1].colors.length;
 
     const colors: string[] = [];
     if (needToInterpolate) {
@@ -449,11 +464,7 @@ export function getAsymmetricDivergingColors(
           : palettes[palettes.length - 2];
 
       if (refPal.colors.length < 4 && centralClass) {
-        if (palettes.some((p) => p.number === 4)) {
-          refPal = palettes.find((p) => p.number === 4) as Palette;
-        } else {
-          throw Error(`Not enough variations of the ${divergingSchemeName} palette available to interpolate to the required parameters`);
-        }
+        throw Error(`Not enough variations of the ${divergingSchemeName} palette available to interpolate to the required parameters`);
       }
 
       const baseColorsLeft = refPal.colors.slice(0, refPal.number / 2);
@@ -494,6 +505,7 @@ export function getAsymmetricDivergingColors(
       colors.push(...colorsRight.slice(0, classRight) as never[]);
     } else {
       const refPal = getPalette(divergingSchemeName, nColors) as Palette;
+
       if (classRight > classLeft) {
         colors.push(...refPal.colors.slice(classRight - classLeft, classRight));
         if (centralClass) {
