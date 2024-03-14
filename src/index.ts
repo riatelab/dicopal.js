@@ -439,15 +439,22 @@ export function getAsymmetricDivergingColors(
       nColors > palettes[palettes.length - 1].colors.length;
 
     const colors: string[] = [];
-
     if (needToInterpolate) {
-      const refPal = centralClass
+      let refPal = centralClass
         ? palettes[palettes.length - 1].number % 2 !== 0
           ? palettes[palettes.length - 1]
           : palettes[palettes.length - 2]
         : palettes[palettes.length - 1].number % 2 === 0
           ? palettes[palettes.length - 1]
           : palettes[palettes.length - 2];
+
+      if (refPal.colors.length < 4 && centralClass) {
+        if (palettes.some((p) => p.number === 4)) {
+          refPal = palettes.find((p) => p.number === 4) as Palette;
+        } else {
+          throw Error(`Not enough variations of the ${divergingSchemeName} palette available to interpolate to the required parameters`);
+        }
+      }
 
       const baseColorsLeft = refPal.colors.slice(0, refPal.number / 2);
       const baseColorsRight = refPal.colors.slice(
@@ -570,4 +577,67 @@ export function getSequentialColors(
   // so we can just return the corresponding colors
   const pal = getPalette(sequentialSchemeName, classNumber) as Palette;
   return reverse ? pal.colors.slice().reverse() : pal.colors.slice();
+}
+
+/**
+ * @description Function to add a new palette to the palette descriptions.
+ *
+ * @param {Object} palette - The palette to add
+ * @param {string} palette.name - Palette name
+ * @param {string} palette.type - Palette type ('sequential', 'diverging' or 'qualitative')
+ * @param {string[]} palette.colors - Palette colors (hexadecimal)
+ * @param {string} palette.provider - Palette provider
+ * @param {string} [palette.url] - Reference url
+ * @return {void}
+ * @throws {Error} - If the palette object is invalid
+ */
+export function addPalette(palette: {
+  name: string;
+  type: string;
+  colors: string[];
+  provider: string;
+  url?: string
+}): void {
+  // Check that palette conforms to the Palette type
+  if (
+    !palette.name
+    || !palette.type
+    || ['sequential', 'diverging', 'qualitative'].indexOf(palette.type) === -1
+    || !palette.colors
+    || !Array.isArray(palette.colors)
+    || palette.colors.length < 2
+    || !palette.colors.every((c: any) => typeof c === 'string' && c.match(/^#[0-9a-fA-F]{6}$/) !== null)
+    || !palette.provider
+  ) {
+    throw new Error('Invalid palette');
+  }
+
+  const { name, type, colors, provider, url } = palette;
+  const number = colors.length;
+
+  // Is the provider already in the palette descriptions?
+  // @ts-ignore
+  if (!paletteDescriptions[provider]) {
+    // Extend the Provider Enum
+    // @ts-ignore
+    Provider[provider.toUpperCase()] = provider;
+
+    // Empty object for storing the palettes
+    paletteDescriptions[provider as Provider] = {};
+
+    // We also need to add the provider to the list of providers
+    allProviders.push(provider);
+  }
+
+  // Is the palette name already in the palette descriptions?
+  if (!paletteDescriptions[provider as Provider][name]) {
+    paletteDescriptions[provider as Provider][name] = {
+      type,
+      url: url || '',
+      values: {},
+    };
+  }
+
+  // Add the palette colors to the palette descriptions
+  paletteDescriptions[provider as Provider][name].values[`${number}`] = colors;
 }

@@ -1,4 +1,5 @@
 import {
+  addPalette,
   getAsymmetricDivergingColors,
   getPalette,
   getPalettes,
@@ -183,5 +184,92 @@ describe('getAsymmetricDivergingColors', () => {
         expect(color).toMatch(/^#[0-9a-fA-F]{6}$/);
       }
     }
+  });
+});
+
+describe('addPalette', () => {
+  it('should add a palette to the list of palettes and succeed in using helpers for sequential palettes', () => {
+    addPalette({
+      name: 'NewPalette',
+      type: 'sequential',
+      colors: ['#000000', '#FFFFFF'],
+      provider: 'MyOrg',
+      url: 'https://example.com',
+    });
+    const palette = getPalette('NewPalette', 2);
+    expect(palette).toBeDefined();
+    expect(palette!.colors).toEqual(['#000000', '#FFFFFF']);
+
+    const interpolatedColors = getSequentialColors('NewPalette', 12);
+    expect(interpolatedColors).toBeDefined();
+    expect(interpolatedColors.length).toBe(12);
+  });
+
+  it('should add a palette to the list of palettes and succeed in using helpers for diverging palettes (1)', () => {
+    addPalette({
+      name: 'NewDivergingPalette',
+      type: 'diverging',
+      colors: ['#D7191C', '#FDAE61', '#d7d7d7', '#ABDDA4', '#35AF24'],
+      provider: 'MyOrg',
+      url: 'https://example.com',
+    });
+
+    addPalette({
+      name: 'NewDivergingPalette',
+      type: 'diverging',
+      colors: ['#D7191C', '#efc091', '#b8e1b2', '#35AF24'],
+      provider: 'MyOrg',
+      url: 'https://example.com',
+    });
+
+    const colors1 = getAsymmetricDivergingColors('NewDivergingPalette', 3, 5, true, true);
+    expect(colors1).toBeDefined();
+    expect(colors1.length).toBe(9);
+
+    const colors2 = getAsymmetricDivergingColors('NewDivergingPalette', 3, 5, false, true);
+    expect(colors2).toBeDefined();
+    expect(colors2.length).toBe(8);
+
+    const colors3 = getAsymmetricDivergingColors('NewDivergingPalette', 3, 5, true, false);
+    expect(colors3).toBeDefined();
+    expect(colors3.length).toBe(9);
+
+    const colors4 = getAsymmetricDivergingColors('NewDivergingPalette', 3, 5, false, false);
+    expect(colors4).toBeDefined();
+    expect(colors4.length).toBe(8);
+  });
+
+  it('should add a palette to the list of palettes and succeed in using helpers for diverging palettes (2)', () => {
+    addPalette({
+      name: 'NewDivergingPalette',
+      type: 'diverging',
+      colors: ['#D7191C','#d7d7d7', '#35AF24'],
+      provider: 'MyOrg',
+      url: 'https://example.com',
+    });
+
+    addPalette({
+      name: 'NewDivergingPalette',
+      type: 'diverging',
+      colors: ['#D7191C', '#efc091', '#b8e1b2', '#35AF24'],
+      provider: 'MyOrg',
+      url: 'https://example.com',
+    });
+
+    const colors1 = getAsymmetricDivergingColors('NewDivergingPalette', 3, 5, true, true);
+    expect(colors1).toBeDefined();
+    expect(colors1.length).toBe(9);
+
+    const colors2 = getAsymmetricDivergingColors('NewDivergingPalette', 3, 5, false, true);
+    expect(colors2).toBeDefined();
+    expect(colors2.length).toBe(8);
+
+    const colors3 = getAsymmetricDivergingColors('NewDivergingPalette', 3, 5, true, false);
+    expect(colors3).toBeDefined();
+    expect(colors3.length).toBe(9);
+
+    const colors4 = getAsymmetricDivergingColors('NewDivergingPalette', 3, 5, false, false);
+    expect(colors4).toBeDefined();
+    expect(colors4.length).toBe(8);
   });
 });
