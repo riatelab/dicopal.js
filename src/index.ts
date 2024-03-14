@@ -73,8 +73,28 @@ export type Palette = {
   cbf?: boolean;
 }
 
-// @ts-ignore
-const paletteDescriptions = data as { [key in Provider]: any };
+type PaletteDescriptionsType = { [key in Provider]: { [key in string]: any } };
+
+const paletteDescriptions: PaletteDescriptionsType = (() => {
+  const uncompressColors = (colors: string): string[] => {
+    const res = [];
+    for (let i = 0; i < colors.length; i += 6) {
+      res.push(`#${colors.slice(i, i + 6)}`);
+    }
+    return res;
+  };
+
+  Object.keys(data).forEach((provider) => {
+    Object.keys(data[provider as Provider]).forEach((name) => {
+      // @ts-ignore
+      Object.keys(data[provider as Provider][name].values).forEach((number) => {
+        // @ts-ignore
+        data[provider as Provider][name].values[number] = uncompressColors(data[provider as Provider][name].values[number])
+      });
+    });
+  });
+  return data;
+})();
 
 const allProviders = Object.keys(paletteDescriptions);
 const allTypes = Object.keys(PaletteType)
@@ -268,10 +288,7 @@ export const getPaletteNumbers = (name: string): number[] => {
  * @returns {Object} - Raw description of all the palette variations
  */
 export const getRawData = (provider?: Provider) => {
-  if (!provider) {
-    return paletteDescriptions;
-  }
-  return paletteDescriptions[provider];
+  return provider ? paletteDescriptions[provider] : paletteDescriptions;
 }
 
 /**
