@@ -2693,6 +2693,15 @@
             "url": "https://jfly.uni-koeln.de/color/"
         }
     },
+    "d3": {
+        "Observable10": {
+            "type": "qualitative",
+            "values": {
+                "10": "4269d0efb118ff725c6cc5b03ca951ff8ab7a463f297bbf59c6b4e9498a0"
+            },
+            "url": "https://d3js.org/d3-scale-chromatic/categorical#schemeObservable10"
+        }
+    },
     "joshuastevens": {
         "Carrots": {
             "type": "sequential",

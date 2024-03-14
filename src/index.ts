@@ -35,6 +35,7 @@ export enum PaletteType {
  * @property {string} WESANDERSON - Wes Anderson palettes
  * @property {string} OKABEITO - Okabe & Ito's palette
  * @property {string} JOSHUASTEVENS - Joshua Stevens' palettes
+ * @property {string} D3 - D3 / Observable palette
  */
 export enum Provider {
   CARTOCOLORS = 'cartocolors',
@@ -48,6 +49,7 @@ export enum Provider {
   WESANDERSON = 'wesanderson',
   OKABEITO = 'okabeito',
   JOSHUASTEVENS = 'joshuastevens',
+  D3 = 'd3',
 }
 
 /**

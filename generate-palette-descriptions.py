@@ -152,6 +152,26 @@ if __name__ == '__main__':
         }
     }
 
+    # Add the palette Observable10 from d3-scale-chromatic
+    res['d3'] = {
+        "Observable10": {
+            "type": "qualitative",
+            "values": { 10:
+              compress_colors(['#4269d0',
+                '#efb118',
+                '#ff725c',
+                '#6cc5b0',
+                '#3ca951',
+                '#ff8ab7',
+                '#a463f2',
+                '#97bbf5',
+                '#9c6b4e',
+                '#9498a0'])
+            },
+            "url": "https://d3js.org/d3-scale-chromatic/categorical#schemeObservable10",
+        }
+    }
+
     # Add palettes from Joshua Stevens:
     res['joshuastevens'] = {}
     # Carrots Palette : https://gist.github.com/jscarto/167b38829aa9eb3758a4f8b1bc3d723f / https://twitter.com/jscarto/status/998627052608729088
