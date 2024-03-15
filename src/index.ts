@@ -383,9 +383,9 @@ export function getAsymmetricDivergingColors(
 
     // Is there a palette long enough for this scheme in dicopal ?
     const needToInterpolateLeft =
-      cl2 > palettes[palettes.length - 1].colors.length;
+      cl2 > palettes[palettes.length - 1].colors.length || cl2 < firstPaletteLength;
     const needToInterpolateRight =
-      cr2 > palettes[palettes.length - 1].colors.length;
+      cr2 > palettes[palettes.length - 1].colors.length || cr2 < firstPaletteLength;
 
     if (needToInterpolateLeft) {
       // For now we skip the central class if any (so we skip palettes with an odd number of classes)
@@ -393,8 +393,11 @@ export function getAsymmetricDivergingColors(
         palettes[palettes.length - 1].number % 2 === 0
           ? palettes[palettes.length - 1]
           : palettes[palettes.length - 2];
+
       const baseColors = palLeft.colors.slice(0, palLeft.number / 2);
-      colors.push(
+
+      if (classLeft === 1) colors.push(baseColors[0]);
+      else colors.push(
         ...quantize(
           scaleLinear()
             .domain(
@@ -411,10 +414,8 @@ export function getAsymmetricDivergingColors(
     }
 
     if (centralClass) {
-      const pal =
-        palettes[palettes.length - 1].number % 2 !== 0
-          ? palettes[palettes.length - 1]
-          : palettes[palettes.length - 2];
+      const pal = palettes.find((p) => p.number === 3) || palettes.find((p) => p.number % 2 !== 0);
+      if (!pal) throw new Error(`Not enough variations of the ${divergingSchemeName} palette available to interpolate to the required parameters`);
       colors.push(pal.colors[Math.floor(pal.colors.length / 2)]);
     }
 
@@ -424,11 +425,14 @@ export function getAsymmetricDivergingColors(
         palettes[palettes.length - 1].number % 2 === 0
           ? palettes[palettes.length - 1]
           : palettes[palettes.length - 2];
+
       const baseColors = palRight.colors.slice(
         palRight.number / 2,
         palRight.number
       );
-      colors.push(
+
+      if (classRight === 1) colors.push(baseColors[baseColors.length - 1]);
+      else colors.push(
         ...quantize(
           scaleLinear()
             .domain(
@@ -443,6 +447,7 @@ export function getAsymmetricDivergingColors(
       const palRight = getPalette(divergingSchemeName, lengthPal) as Palette;
       colors.push(...palRight.colors.slice(lengthPal - classRight, lengthPal));
     }
+
     return reversed
       ? colors.map((d) => rgbToHex(d as string)).reverse() as string[]
       : colors.map((d) => rgbToHex(d as string)) as string[];
@@ -451,7 +456,9 @@ export function getAsymmetricDivergingColors(
     const nColors = max * 2 + Number(centralClass);
 
     // Is there a palette long enough for this scheme in dicopal ?
-    const needToInterpolate = nColors > palettes[palettes.length - 1].colors.length;
+    const needToInterpolate =
+      nColors > palettes[palettes.length - 1].colors.length
+      || nColors < palettes[0].colors.length;
 
     const colors: string[] = [];
     if (needToInterpolate) {
@@ -463,8 +470,14 @@ export function getAsymmetricDivergingColors(
           ? palettes[palettes.length - 1]
           : palettes[palettes.length - 2];
 
+      let centralClassValue = centralClass ? refPal.colors[Math.floor(refPal.colors.length / 2)] : null;
+
       if (refPal.colors.length < 4 && centralClass) {
-        throw Error(`Not enough variations of the ${divergingSchemeName} palette available to interpolate to the required parameters`);
+        const t = palettes.find((p) => p.number === 4);
+        if (!t) {
+          throw Error(`Not enough variations of the ${divergingSchemeName} palette available to interpolate to the required parameters`);
+        }
+        refPal = t as Palette;
       }
 
       const baseColorsLeft = refPal.colors.slice(0, refPal.number / 2);
@@ -499,8 +512,8 @@ export function getAsymmetricDivergingColors(
         max
       );
       colors.push(...colorsLeft.reverse().slice(0, classLeft).reverse() as never[]);
-      if (centralClass) {
-        colors.push(refPal.colors[Math.floor(refPal.colors.length / 2)]);
+      if (centralClassValue) {
+        colors.push(centralClassValue);
       }
       colors.push(...colorsRight.slice(0, classRight) as never[]);
     } else {

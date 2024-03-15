@@ -225,6 +225,7 @@ describe('addPalette', () => {
     const colors1 = getAsymmetricDivergingColors('NewDivergingPalette1', 3, 5, true, true);
     expect(colors1).toBeDefined();
     expect(colors1.length).toBe(9);
+    expect(colors1[3]).toBe('#d7d7d7');
 
     const colors2 = getAsymmetricDivergingColors('NewDivergingPalette1', 3, 5, false, true);
     expect(colors2).toBeDefined();
@@ -233,10 +234,21 @@ describe('addPalette', () => {
     const colors3 = getAsymmetricDivergingColors('NewDivergingPalette1', 3, 5, true, false);
     expect(colors3).toBeDefined();
     expect(colors3.length).toBe(9);
+    expect(colors3[3]).toBe('#d7d7d7');
 
     const colors4 = getAsymmetricDivergingColors('NewDivergingPalette1', 3, 5, false, false);
     expect(colors4).toBeDefined();
     expect(colors4.length).toBe(8);
+
+    const colors5 = getAsymmetricDivergingColors('NewDivergingPalette1', 5, 3, true, false);
+    expect(colors5).toBeDefined();
+    expect(colors5.length).toBe(9);
+    expect(colors5[5]).toBe('#d7d7d7');
+
+    const colors6 = getAsymmetricDivergingColors('NewDivergingPalette1', 5, 3, true, true);
+    expect(colors6).toBeDefined();
+    expect(colors6.length).toBe(9);
+    expect(colors6[5]).toBe('#d7d7d7');
   });
 
   it('should add a palette to the list of palettes and succeed in using helpers for diverging palettes (2)', () => {
@@ -256,8 +268,10 @@ describe('addPalette', () => {
       url: 'https://example.com',
     });
 
-    expect(() => getAsymmetricDivergingColors('NewDivergingPalette2', 3, 5, true, true))
-      .toThrow(Error);
+    const colors0 = getAsymmetricDivergingColors('NewDivergingPalette2', 3, 5, true, true);
+    expect(colors0).toBeDefined();
+    expect(colors0.length).toBe(9);
+    expect(colors0[3]).toBe('#d7d7d7');
 
     const colors1 = getAsymmetricDivergingColors('NewDivergingPalette2', 3, 5, false, true);
     expect(colors1).toBeDefined();
@@ -266,6 +280,7 @@ describe('addPalette', () => {
     const colors2 = getAsymmetricDivergingColors('NewDivergingPalette2', 3, 5, true, false);
     expect(colors2).toBeDefined();
     expect(colors2.length).toBe(9);
+    expect(colors2[3]).toBe('#d7d7d7');
 
     const colors3 = getAsymmetricDivergingColors('NewDivergingPalette2', 3, 5, false, false);
     expect(colors3).toBeDefined();
@@ -289,9 +304,11 @@ describe('addPalette', () => {
       url: 'https://example.com',
     });
 
+    // ...
     const colors1 = getAsymmetricDivergingColors('NewDivergingPalette3', 3, 5, true, true);
     expect(colors1).toBeDefined();
     expect(colors1.length).toBe(9);
+    expect(colors1[3]).toBe('#d7d7d7');
 
     const colors2 = getAsymmetricDivergingColors('NewDivergingPalette3', 3, 5, false, true);
     expect(colors2).toBeDefined();
@@ -300,25 +317,59 @@ describe('addPalette', () => {
     const colors3 = getAsymmetricDivergingColors('NewDivergingPalette3', 3, 5, true, false);
     expect(colors3).toBeDefined();
     expect(colors3.length).toBe(9);
+    expect(colors3[3]).toBe('#d7d7d7');
 
     const colors4 = getAsymmetricDivergingColors('NewDivergingPalette3', 3, 5, false, false);
     expect(colors4).toBeDefined();
     expect(colors4.length).toBe(8);
 
+    // ...
     const colors5 = getAsymmetricDivergingColors('NewDivergingPalette3', 1, 1, true, true);
     expect(colors5).toBeDefined();
     expect(colors5.length).toBe(3);
+    expect(colors5[1]).toBe('#d7d7d7');
 
-    const colors6 = getAsymmetricDivergingColors('NewDivergingPalette3', 2, 1, true, false);
-    expect(colors6).toBeDefined();
-    expect(colors6.length).toBe(4);
+    /// ...
+    const colors6a = getAsymmetricDivergingColors('NewDivergingPalette3', 2, 1, true, false);
+    expect(colors6a).toBeDefined();
+    expect(colors6a.length).toBe(4);
+    expect(colors6a[2]).toBe('#d7d7d7');
 
-    const colors7 = getAsymmetricDivergingColors('NewDivergingPalette3', 2, 3, true, true);
-    expect(colors7).toBeDefined();
-    expect(colors7.length).toBe(6);
+    const colors6b = getAsymmetricDivergingColors('NewDivergingPalette3', 2, 1, true, true);
+    expect(colors6b).toBeDefined();
+    expect(colors6b.length).toBe(4);
+    expect(colors6b[2]).toBe('#d7d7d7');
 
+
+    // ...
+    const colors7a = getAsymmetricDivergingColors('NewDivergingPalette3', 2, 3, true, true);
+    expect(colors7a).toBeDefined();
+    expect(colors7a.length).toBe(6);
+    expect(colors7a[2]).toBe('#d7d7d7');
+
+    const colors7b = getAsymmetricDivergingColors('NewDivergingPalette3', 2, 3, true, false);
+    expect(colors7b).toBeDefined();
+    expect(colors7b.length).toBe(6);
+    expect(colors7b[2]).toBe('#d7d7d7');
+
+
+    // ...
     const colors8 = getAsymmetricDivergingColors('NewDivergingPalette3', 10, 12, false, false);
     expect(colors8).toBeDefined();
     expect(colors8.length).toBe(22);
+
+    const colors9 = getAsymmetricDivergingColors('NewDivergingPalette3', 10, 12, true, false);
+    expect(colors9).toBeDefined();
+    expect(colors9.length).toBe(23);
+    expect(colors9[10]).toBe('#d7d7d7');
+
+    const colors10 = getAsymmetricDivergingColors('NewDivergingPalette3', 10, 12, false, true);
+    expect(colors10).toBeDefined();
+    expect(colors10.length).toBe(22);
+
+    const colors11 = getAsymmetricDivergingColors('NewDivergingPalette3', 10, 12, true, true);
+    expect(colors11).toBeDefined();
+    expect(colors11.length).toBe(23);
+    expect(colors11[10]).toBe('#d7d7d7');
   });
 });
