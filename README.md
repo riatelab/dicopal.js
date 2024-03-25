@@ -203,7 +203,7 @@ It takes the following arguments:
 const pal = getSequentialColors('Blues', 12);
 ```
 
-### Add your palettes to Dicopal to benefit from the API *[experimental - unreleased yet]*
+### Add your palettes to Dicopal to benefit from the API
 
 You can add your own palettes to Dicopal at runtime:
 
