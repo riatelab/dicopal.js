@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.8.0 (2024-03-25)
 
 - New: Add 'Observable10' categorical palette from [d3-scale-chromatic](https://d3js.org/d3-scale-chromatic/categorical#schemeObservable10) (fixes [#9](https://github.com/riatelab/dicopal.js/issues/9)).
 
