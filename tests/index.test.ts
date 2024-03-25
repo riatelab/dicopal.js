@@ -205,6 +205,45 @@ describe('addPalette', () => {
     expect(interpolatedColors.length).toBe(12);
   });
 
+
+  it('should throw error when trying to add invalid palettes', () => {
+    expect(() => addPalette({
+      name: 'NewPalette1234',
+      type: 'sequential',
+      colors: ['#000000'],
+      provider: 'MyOrg',
+      url: 'https://example.com',
+    }))
+      .toThrow(Error);
+
+    expect(() => addPalette({
+      name: 'NewPalette1234',
+      type: 'diverging',
+      colors: ['#000000'],
+      provider: 'MyOrg',
+      url: 'https://example.com',
+    }))
+      .toThrow(Error);
+
+    // @ts-ignore
+    expect(() => addPalette({
+      name: 'NewPalette1234',
+      type: 'qualitative',
+      provider: 'MyOrg',
+      url: 'https://example.com',
+    }))
+      .toThrow(Error);
+
+    expect(() => addPalette({
+      name: 'NewPalette1234',
+      type: 'qualitative',
+      provider: 'MyOrg',
+      url: 'https://example.com',
+      colors: ['SomeStringThatIsNotAColor', 'SomeOtherStringThatIsNotAColor'],
+    }))
+      .toThrow(Error);
+  });
+
   it('should add a palette to the list of palettes and succeed in using helpers for diverging palettes (1)', () => {
     addPalette({
       name: 'NewDivergingPalette1',

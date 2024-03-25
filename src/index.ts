@@ -579,6 +579,11 @@ export function getSequentialColors(
     throw new Error(`${sequentialSchemeName} is not a sequential scheme`);
   }
 
+  // Is there palettes long enough for this scheme?
+  if (palettes.every((p) => p.colors.length < 2)) {
+    throw new Error(`Not enough variations of the ${sequentialSchemeName} palette available to interpolate to the required parameters`);
+  }
+
   // Is there a palette long enough for this scheme in dicopal ?
   const needToInterpolate =
     classNumber > palettes[palettes.length - 1].colors.length || classNumber < palettes[0].colors.length;
