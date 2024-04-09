@@ -1,6 +1,6 @@
 {
   "name": "dicopal",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Discrete color palettes for cartography and data visualization",
   "homepage": "https://github.com/riatelab/dicopal.js",
   "repository": {
