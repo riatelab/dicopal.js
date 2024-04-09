@@ -374,6 +374,13 @@ export function getAsymmetricDivergingColors(
     balanced = true;
   }
 
+  // If we want a reversed palette, we also need to swap the 'left' and 'right' values
+  // (because the 'left' values are on the right and vice versa, and because we just reverse
+  // the order of the colors before returning them in what follows)
+  if (reversed) {
+    [classLeft, classRight] = [classRight, classLeft];
+  }
+
   if (!balanced) {
     const colors = [];
     let cl2 = classLeft * 2;

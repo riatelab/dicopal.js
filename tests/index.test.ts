@@ -157,11 +157,12 @@ describe('getAsymmetricDivergingColors', () => {
       ['Balance', 7, 8, false, false],
     ];
     for (const [name, nLeft, nRight, centralClass, balanced] of params) {
-      const colors = getAsymmetricDivergingColors(name, nLeft, nRight, centralClass, balanced);
       const colorsRev = getAsymmetricDivergingColors(name, nLeft, nRight, centralClass, balanced, true);
+      // We use nLeft as right value, nRight as left value, and reverse the array
+      const colorsRef = getAsymmetricDivergingColors(name, nRight, nLeft, centralClass, balanced).reverse();
       expect(colorsRev).toBeDefined();
-      expect(colorsRev.length).toBe(colors.length);
-      expect(colorsRev).toEqual(colors.slice().reverse());
+      expect(colorsRev.length).toBe(colorsRef.length);
+      expect(colorsRev).toEqual(colorsRef);
     }
   });
 
