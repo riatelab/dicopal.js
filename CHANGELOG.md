@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.8.2 (2026-09-10)
+
+- Fix `getColors`, `getColorsById`, `getPalette` and `getPalettes` to return copies of the internal colors arrays
+  instead of references to them, so mutating the returned arrays/objects no longer corrupts dicopal's internal cache.
+  Same fix has been applied to `addPalette`, which now copies the provided `colors` array instead of keeping a reference to it.
+
+- Update build tooling: replace `rollup-plugin-typescript2` with `@rollup/plugin-typescript`, and fix
+  `rollup.config.mjs` to work with Node 22 (import attributes syntax change for `package.json`).
+
 ## 0.8.1 (2024-04-09)
 
 - Fix 'reverse' behavior in getAsymmetricDivergingColors (fixes [#11](https://github.com/riatelab/dicopal.js/issues/11)).
