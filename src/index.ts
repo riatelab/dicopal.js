@@ -117,7 +117,7 @@ export const getPalette = (name: string, number: number): Palette | undefined =>
         name,
         number,
         type: paletteDescriptions[provider as Provider][name].type as PaletteType,
-        colors: paletteDescriptions[provider as Provider][name].values[`${number}`],
+        colors: paletteDescriptions[provider as Provider][name].values[`${number}`].slice(),
         provider: provider as Provider,
         url: paletteDescriptions[provider as Provider][name].url,
       };
@@ -155,7 +155,7 @@ export const getColors = (name: string, number: number, reverse?: boolean): stri
   const pal = getPalette(name, number);
   if (!pal) return;
   if (reverse === true) {
-    return pal.colors.slice().reverse();
+    return pal.colors.reverse();
   }
   return pal.colors;
 }
@@ -170,7 +170,7 @@ export const getColorsById = (id: string, reverse?: boolean): string[] | undefin
   const pal = getPaletteById(id);
   if (!pal) return;
   if (reverse === true) {
-    return pal.colors.slice().reverse();
+    return pal.colors.reverse();
   }
   return pal.colors;
 }
@@ -190,7 +190,7 @@ const getAllPalettes = (): Palette[] => {
           name,
           number: parseInt(number, 10),
           type,
-          colors: paletteDescriptions[provider as Provider][name].values[number],
+          colors: paletteDescriptions[provider as Provider][name].values[number].slice(),
           provider: provider as Provider,
           url,
         };
@@ -613,7 +613,7 @@ export function getSequentialColors(
   // Requested number of classes is in the range of the palettes
   // so we can just return the corresponding colors
   const pal = getPalette(sequentialSchemeName, classNumber) as Palette;
-  return reverse ? pal.colors.slice().reverse() : pal.colors.slice();
+  return reverse ? pal.colors.reverse() : pal.colors;
 }
 
 /**
@@ -676,5 +676,5 @@ export function addPalette(palette: {
   }
 
   // Add the palette colors to the palette descriptions
-  paletteDescriptions[provider as Provider][name].values[`${number}`] = colors;
+  paletteDescriptions[provider as Provider][name].values[`${number}`] = colors.slice();
 }

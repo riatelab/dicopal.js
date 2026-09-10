@@ -1,6 +1,8 @@
 import {
   addPalette,
   getAsymmetricDivergingColors,
+  getColors,
+  getColorsById,
   getPalette,
   getPalettes,
   getSequentialColors,
@@ -411,5 +413,75 @@ describe('addPalette', () => {
     expect(colors11).toBeDefined();
     expect(colors11.length).toBe(23);
     expect(colors11[10]).toBe('#d7d7d7');
+  });
+});
+
+describe('immutability of returned colors/palettes', () => {
+  it('getPalette should return a fresh colors array on each call', () => {
+    const p1 = getPalette('Blues', 5)!;
+    const originalLength = p1.colors.length;
+    p1.colors.push('#000000');
+
+    const p2 = getPalette('Blues', 5)!;
+    expect(p2.colors.length).toBe(originalLength);
+    expect(p1.colors).not.toBe(p2.colors);
+  });
+
+  it('getColors should return a fresh colors array on each call', () => {
+    const c1 = getColors('Blues', 5)!;
+    const originalLength = c1.length;
+    c1.push('#123456');
+    c1.reverse();
+
+    const c2 = getColors('Blues', 5)!;
+    expect(c2.length).toBe(originalLength);
+    expect(c1).not.toBe(c2);
+  });
+
+  it('getColors with reverse=true should not mutate subsequent calls', () => {
+    const original = getColors('Blues', 5)!;
+    const reversed = getColors('Blues', 5, true)!;
+    expect(reversed).toEqual(original.slice().reverse());
+
+    const again = getColors('Blues', 5)!;
+    expect(again).toEqual(original);
+  });
+
+  it('getColorsById should return a fresh colors array on each call', () => {
+    const c1 = getColorsById('Blues_5')!;
+    c1.push('#123456');
+
+    const c2 = getColorsById('Blues_5')!;
+    expect(c2.length).toBe(5);
+  });
+
+  it('getPalettes should return palettes with independent colors arrays', () => {
+    const palettes1 = getPalettes({ name: 'Blues' });
+    const target1 = palettes1.find((p) => p.number === 5)!;
+    target1.colors.push('#123456');
+
+    const palettes2 = getPalettes({ name: 'Blues' });
+    const target2 = palettes2.find((p) => p.number === 5)!;
+    expect(target2.colors.length).toBe(5);
+    expect(target1.colors).not.toBe(target2.colors);
+  });
+
+  it('addPalette should copy the input colors array (not keep a reference)', () => {
+    const inputColors = ['#111111', '#222222', '#333333'];
+    addPalette({
+      name: 'ImmutabilityTestPalette',
+      type: 'sequential',
+      colors: inputColors,
+      provider: 'MyOrgImmutable',
+      url: 'https://example.com',
+    });
+
+    // Mutate the original array after registration
+    inputColors.push('#444444');
+    inputColors[0] = '#FFFFFF';
+
+    const stored = getPalette('ImmutabilityTestPalette', 3);
+    expect(stored).toBeDefined();
+    expect(stored!.colors).toEqual(['#111111', '#222222', '#333333']);
   });
 });
