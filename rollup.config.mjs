@@ -1,11 +1,12 @@
 import { nodeResolve } from '@rollup/plugin-node-resolve';
-import typescript from 'rollup-plugin-typescript2';
+import typescript from '@rollup/plugin-typescript';
 import json from '@rollup/plugin-json';
 import terser from '@rollup/plugin-terser';
-import pkg from './package.json' assert { type: 'json' };
-import ts from 'typescript';
+import { createRequire } from 'module';
 
 const input = "src/index.ts";
+const require = createRequire(import.meta.url);
+const pkg = require('./package.json');
 
 const plugins = [
   nodeResolve(),
@@ -14,7 +15,8 @@ const plugins = [
     compact: true,
   }),
   typescript({
-    typescript: ts,
+    tsconfig: './tsconfig.json',
+    declarationDir: './dist'
   }),
   terser(),
 ];
